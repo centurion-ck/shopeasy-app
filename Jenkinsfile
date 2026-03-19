@@ -3,8 +3,8 @@ pipeline {
     
     environment {
         SONAR_HOME = tool "sonar-scanner"
-        AWS_ACCOUNT_ID = "093435167670YOUR_AWS_ACCOUNT_ID"
-        AWS_REGION = "ap-south-1"
+        AWS_ACCOUNT_ID = "093435167670"
+        AWS_REGION = "us-east-1"
         ECR_REPO = "shopeasy-app"
         IMAGE_TAG = "${BUILD_NUMBER}"
         ECR_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
@@ -50,10 +50,14 @@ pipeline {
 
         stage("Quality Gate Check") {
             steps {
-                timeout(time: 5, unit: "MINUTES") {
-                    waitForQualityGate abortPipeline: false
+                script {
+                    def qg = waitForQualityGate abortPipeline: false
+                    if (qg.status != 'OK') {
+                        echo "⚠️ Quality Gate status: ${qg.status} - Continuing anyway!"
+                    } else {
+                        echo "✅ Quality Gate passed!"
+                    }
                 }
-                echo "✅ Quality gate passed!"
             }
         }
 

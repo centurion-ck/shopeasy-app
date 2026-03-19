@@ -52,7 +52,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        timeout(time: 5, unit: "MINUTES") {
+                        timeout(time: 2, unit: "MINUTES") {
                             def qg = waitForQualityGate abortPipeline: false
                             if (qg.status != 'OK') {
                                 echo "⚠️ Quality Gate status: ${qg.status} - Continuing anyway!"

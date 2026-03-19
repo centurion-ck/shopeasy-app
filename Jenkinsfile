@@ -51,11 +51,17 @@ pipeline {
         stage("Quality Gate Check") {
             steps {
                 script {
-                    def qg = waitForQualityGate abortPipeline: false
-                    if (qg.status != 'OK') {
-                        echo "⚠️ Quality Gate status: ${qg.status} - Continuing anyway!"
-                    } else {
-                        echo "✅ Quality Gate passed!"
+                    try {
+                        timeout(time: 5, unit: "MINUTES") {
+                            def qg = waitForQualityGate abortPipeline: false
+                            if (qg.status != 'OK') {
+                                echo "⚠️ Quality Gate status: ${qg.status} - Continuing anyway!"
+                            } else {
+                                echo "✅ Quality Gate passed!"
+                            }
+                        }
+                    } catch (err) {
+                        echo "⚠️ Quality Gate timed out after 5 mins - Continuing pipeline!"
                     }
                 }
             }

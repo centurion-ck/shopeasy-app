@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: shopeasy
-        image: YOUR_ECR_URI:latest
+        image: 093435167670.dkr.ecr.ap-south-1.amazonaws.com/shopeasy-app:latest
         ports:
         - containerPort: 8080
         env:
